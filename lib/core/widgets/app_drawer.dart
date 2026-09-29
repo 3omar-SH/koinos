@@ -18,6 +18,8 @@ class AppDrawer extends StatelessWidget {
         context.watch<SettingsCubit>().state.themeMode == ThemeMode.dark;
 
     final _auth = FirebaseAuth.instance;
+    final photoUrl = _auth.currentUser?.photoURL;
+    final hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
 
     final cubitUserName = context.watch<SettingsCubit>().state.userName;
     final String displayUserName = (cubitUserName == "User" ||
@@ -36,19 +38,13 @@ class AppDrawer extends StatelessWidget {
                 CircleAvatar(
                   radius: 30,
                   backgroundColor: AppColors.primaryBlue,
-                  backgroundImage:
-                      NetworkImage(_auth.currentUser?.photoURL ?? ""),
-                  child: _auth.currentUser!.photoURL!.isEmpty
-                      ? Text(
-                          displayUserName.isNotEmpty
-                              ? displayUserName.substring(0, 1).toUpperCase()
-                              : "U",
-                          style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.lightBackground),
-                        )
-                      : null,
+                  backgroundImage: hasPhoto ? NetworkImage(photoUrl) : null,
+                  child: hasPhoto
+                      ? null
+                      : Text(
+                          displayUserName.isNotEmpty ? displayUserName.substring(0, 1).toUpperCase() : "U",
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.lightBackground),
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(

@@ -12,7 +12,8 @@ class AuthLoading extends AuthState {
 
 class AuthSuccess extends AuthState {
   final String message;
-  AuthSuccess({required this.message});
+  final bool navigateHome;
+  AuthSuccess({required this.message , this.navigateHome = true});
   @override
   String toString() => 'AuthSuccess{message: $message}';
 }

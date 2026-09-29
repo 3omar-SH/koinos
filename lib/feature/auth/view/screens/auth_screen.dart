@@ -87,7 +87,7 @@ class _AuthScreenState extends State<AuthScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => const ResetPasswordDialog(), 
+      builder: (dialogContext) => const ResetPasswordDialog(),
     );
   }
 
@@ -145,7 +145,13 @@ class _AuthScreenState extends State<AuthScreen>
                       child: BlocConsumer<AuthCubit, AuthState>(
                         listener: (context, state) {
                           if (state is AuthSuccess) {
-                            context.go('/home');
+                            if (state.navigateHome) {
+                              context.go('/home');
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(state.message)));
+                              setState(() => _isLogin = true);
+                            }
                           }
                           if (state is AuthFailure) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -278,7 +284,8 @@ class _AuthScreenState extends State<AuthScreen>
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
                                       child: Text(
                                         "OR",
                                         style: TextStyle(
@@ -302,7 +309,8 @@ class _AuthScreenState extends State<AuthScreen>
                                   height: 50,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.glassBackgroundDark,
+                                      backgroundColor:
+                                          AppColors.glassBackgroundDark,
                                       padding: EdgeInsets.zero,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
@@ -312,7 +320,9 @@ class _AuthScreenState extends State<AuthScreen>
                                         ? null
                                         : () {
                                             FocusScope.of(context).unfocus();
-                                            context.read<AuthCubit>().signInWithGoogle();
+                                            context
+                                                .read<AuthCubit>()
+                                                .signInWithGoogle();
                                           },
                                     child: isLoading
                                         ? const SizedBox(
@@ -320,11 +330,12 @@ class _AuthScreenState extends State<AuthScreen>
                                             height: 24,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 2.5,
-                                              color: AppColors.primaryBlue, 
+                                              color: AppColors.primaryBlue,
                                             ),
                                           )
                                         : Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Image.asset(
                                                 'assets/images/google.png',
@@ -346,25 +357,26 @@ class _AuthScreenState extends State<AuthScreen>
                                 ),
                                 const SizedBox(height: 16),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      _isLogin
-                                          ? "Don't have an account?"
-                                          : 'Already have an account!',
-                                      style: const TextStyle(
-                                          color: AppColors.textDarkMode),
-                                    ),
-                                    TextButton(
-                                      onPressed: isLoading ? null : _toggleMode,
-                                      child: Text(
-                                        _isLogin ? 'Sign Up' : 'Sign In',
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        _isLogin
+                                            ? "Don't have an account?"
+                                            : 'Already have an account!',
                                         style: const TextStyle(
-                                            color: AppColors.primaryBlue , fontWeight: FontWeight.bold),
+                                            color: AppColors.textDarkMode),
                                       ),
-                                    ),
-                                  ]
-                                ),
+                                      TextButton(
+                                        onPressed:
+                                            isLoading ? null : _toggleMode,
+                                        child: Text(
+                                          _isLogin ? 'Sign Up' : 'Sign In',
+                                          style: const TextStyle(
+                                              color: AppColors.primaryBlue,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ]),
                               ],
                             ),
                           );

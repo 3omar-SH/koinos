@@ -22,7 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
         password: password,
       );
       emit(AuthSuccess(
-        message: 'Account created successfully! Please verify your email before signing in.',
+        message: 'Account created successfully! Please verify your email before signing in.', navigateHome: false
       ));
     } catch (e) {
       emit(AuthFailure(errorMessage: e.toString()));
