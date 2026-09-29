@@ -19,6 +19,7 @@ class ProfileScreen extends StatelessWidget {
     
     final theme = Theme.of(context);
 
+
     final cubitUserName = settingsState.userName;
     final String displayUserName = (cubitUserName == "User" ||
             cubitUserName.isEmpty ||
@@ -27,6 +28,8 @@ class ProfileScreen extends StatelessWidget {
         : cubitUserName;
 
     final isLoadingImage = settingsState.status == SettingsStatus.loading;
+    final photoUrl = _auth.currentUser?.photoURL;
+    final hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -47,15 +50,14 @@ class ProfileScreen extends StatelessWidget {
                 CircleAvatar(
                   radius: 60,
                   backgroundColor: AppColors.primaryBlue,
-                  backgroundImage: NetworkImage(_auth.currentUser?.photoURL ?? ""),
-                  child: _auth.currentUser!.photoURL!.isEmpty
-                      ? Text(
+                  backgroundImage: hasPhoto ? NetworkImage(photoUrl) : null,
+                  child: hasPhoto
+                      ? null
+                      : Text(
                           displayUserName.isNotEmpty ? displayUserName.substring(0, 1).toUpperCase() : "U",
-                          style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
-                        )
-                      : null,
+                          style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: AppColors.lightBackground),
+                        ),
                 ),
-                
                 if (isLoadingImage)
                   Positioned.fill(
                     child: Container(
